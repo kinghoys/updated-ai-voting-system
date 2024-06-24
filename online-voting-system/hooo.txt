@@ -45,7 +45,8 @@ CREATE TABLE admins (
     password_hash VARCHAR(255)
 );
 
-now move to (localhost/online-voting-system/
+now move to 
+localhost/online-voting-system/
 
 
 admin details unique
