@@ -1,4 +1,5 @@
-
+http://localhost/phpmyadmin
+(in sql paste)
 CREATE DATABASE voting_system;
 
 USE voting_system;
@@ -44,6 +45,7 @@ CREATE TABLE admins (
     password_hash VARCHAR(255)
 );
 
+now move to (localhost/online-voting-system/
 
 
 admin details unique
