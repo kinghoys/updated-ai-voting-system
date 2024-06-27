@@ -2,11 +2,13 @@
 require 'config.php';
 session_start();
 
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $aadhar_number = sanitizeInput($_POST['aadhar_number']);
     $password = sanitizeInput($_POST['password']);
 
-    // Check if user exists
+    // Check if user exists and is not an admin
     $stmt = $conn->prepare("SELECT * FROM users WHERE aadhar_number = ?");
     $stmt->bind_param("s", $aadhar_number);
     $stmt->execute();
@@ -16,16 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role'] = $user['role'];
-        
-        if ($user['role'] == 'admin') {
-            header("Location: admin_dashboard.php");
-        } else {
-            header("Location: vote.php");
-        }
+
+        header("Location: vote.php");
         exit();
     } else {
-        echo "Invalid credentials.";
+        $errors[] = "Invalid credentials.";
     }
+}
+
+function sanitizeInput($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
 ?>
 
@@ -41,6 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h1>Login</h1>
     </header>
     <main class="main-container">
+        <?php if (count($errors) > 0): ?>
+            <div class="alert alert-danger">
+                <?php foreach ($errors as $error): ?>
+                    <p><?php echo $error; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         <form action="login.php" method="post">
             <div class="form-group">
                 <label for="aadhar_number">Aadhar Number:</label>

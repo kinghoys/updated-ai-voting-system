@@ -8,7 +8,18 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Fetch user details
 $user_id = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+
+// Redirect admin to admin dashboard
+if ($user['role'] == 'admin') {
+    header("Location: admin_dashboard.php");
+    exit();
+}
 
 // Check if user has already voted
 $stmt = $conn->prepare("SELECT * FROM votes WHERE user_id = ?");

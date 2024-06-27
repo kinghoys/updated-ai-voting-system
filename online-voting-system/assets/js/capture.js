@@ -1,26 +1,40 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const video = document.createElement("video");
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = 320;
-    canvas.height = 240;
+// capture.js
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
+function captureImage() {
+    var video = document.createElement('video');
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    var width = 320;
+    var height = 240;
+    canvas.width = width;
+    canvas.height = height;
+    var streaming = false;
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then(function (stream) {
             video.srcObject = stream;
             video.play();
-            document.getElementById("camera").appendChild(video);
-            video.width = 320;
-            video.height = 240;
         })
-        .catch(err => console.error("Error accessing camera: " + err));
+        .catch(function (err) {
+            console.log("An error occurred: " + err);
+        });
 
-    window.captureImage = function() {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataURL = canvas.toDataURL("image/png");
-        document.getElementById("captured_image_data").value = dataURL;
+    video.addEventListener('canplay', function (ev) {
+        if (!streaming) {
+            video.setAttribute('width', width);
+            video.setAttribute('height', height);
+            streaming = true;
+        }
+    }, false);
 
-        // Show capture successful message
-        alert("Capture Successful");
-    };
-});
+    document.getElementById('camera').appendChild(video);
+
+    video.addEventListener('click', function () {
+        context.drawImage(video, 0, 0, width, height);
+        var data = canvas.toDataURL('image/png');
+        document.getElementById('captured_image_data').value = data;
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.remove();
+        alert("Image captured successfully.");
+    }, false);
+}

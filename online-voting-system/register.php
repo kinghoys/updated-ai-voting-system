@@ -1,5 +1,6 @@
 <?php
 require 'config.php';
+session_start();
 
 $errors = [];
 
@@ -35,6 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+function sanitizeInput($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <form action="register.php" method="post" enctype="multipart/form-data">
+        <form action="register.php" method="post">
             <div class="form-group">
                 <label for="aadhar_number">Aadhar Number:</label>
                 <input type="text" id="aadhar_number" name="aadhar_number" class="form-control" required>

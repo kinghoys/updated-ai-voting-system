@@ -14,6 +14,7 @@
         <div class="links">
             <a href="register.php" class="btn btn-success">Register</a>
             <a href="login.php" class="btn btn-success">Login</a>
+            <a href="admin_login.php" class="btn btn-danger">Admin Login</a>
         </div>
     </main>
     <footer>

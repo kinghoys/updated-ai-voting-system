@@ -1,13 +1,13 @@
 <?php
-require 'config.php';
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: admin_login.php");
     exit();
 }
 
 // Fetch users and candidates
+require 'config.php';
 $users = [];
 $stmt = $conn->prepare("SELECT * FROM users");
 $stmt->execute();
@@ -94,6 +94,7 @@ while ($row = $result->fetch_assoc()) {
         </table>
 
         <a href="add_candidate.php" class="btn btn-success">Add Candidate</a>
+        <a href="results.php" class="btn btn-info">View Results</a>
     </main>
     <footer>
         <p>&copy; 2024 Election Commission of India</p>
